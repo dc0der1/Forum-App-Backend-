@@ -21,7 +21,7 @@ public class GlobalExceptions {
     }
 
     @ExceptionHandler({InvalidPasswordException.class, InvalidEmailException.class,
-            InvalidUsernameException.class})
+            InvalidUsernameException.class, InvalidLoginException.class})
     public ResponseEntity<Map<String, String>> handleValidationExceptions(Exception e) {
         return ResponseEntity.badRequest()
                 .body(Map.of("message", "Validation Error", "error", e.getMessage()));

@@ -2,8 +2,10 @@ package com.example.freeforall.services;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
 import com.example.freeforall.dtos.CreateUserRequest;
+import com.example.freeforall.dtos.LoginRequest;
 import com.example.freeforall.entities.Role;
 import com.example.freeforall.entities.UserEntity;
+import com.example.freeforall.exceptions.InvalidLoginException;
 import com.example.freeforall.exceptions.UserAlreadyExistsException;
 import com.example.freeforall.exceptions.UserNotFoundException;
 import com.example.freeforall.repositories.IUserRepository;
@@ -21,6 +23,7 @@ import java.util.UUID;
 public class UserService implements IUserService{
 
     private final IUserRepository userRepository;
+    private final IJwtService jwtService;
 
     @Override
     public UserEntity registerUser(CreateUserRequest request) {
@@ -51,5 +54,28 @@ public class UserService implements IUserService{
         }
 
         return user.get();
+    }
+
+    @Override
+    public String signInUser(LoginRequest request) {
+        Optional<UserEntity> optionalUser = userRepository.findUserByEmail(request.getEmail());
+
+        if (optionalUser.isEmpty()) {
+            throw new InvalidLoginException("Invalid email or password");
+        }
+
+        UserEntity user = optionalUser.get();
+
+        assert user.getPassword() != null;
+        BCrypt.Result result = BCrypt.verifyer().verify(
+                request.getPassword().toCharArray(),
+                user.getPassword()
+        );
+
+        if (!result.verified) {
+            throw new InvalidLoginException("Invalid email or password");
+        }
+
+        return jwtService.generateToken(user);
     }
 }

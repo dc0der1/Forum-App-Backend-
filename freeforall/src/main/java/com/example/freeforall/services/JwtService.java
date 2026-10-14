@@ -16,7 +16,7 @@ import java.util.UUID;
 @Service
 public class JwtService implements IJwtService{
 
-    private final String secretKey = "SUPERDOOPERSECRETKEY123";
+    private final String secretKey = "SUPERDOOPERSECRETKEY123THATSHOULDHOPEFULLYBE256BITSFORITTOWORK";
 
     @Override
     public String generateToken(UserEntity userEntity) {
