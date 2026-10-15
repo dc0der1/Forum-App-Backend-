@@ -1,5 +1,6 @@
 package com.example.freeforall.exceptions;
 
+import com.example.freeforall.exceptions.user.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -49,9 +50,16 @@ public class GlobalExceptions {
         return ResponseEntity.badRequest().body(body);
     }
 
+    @ExceptionHandler({InvalidPostTitleException.class, InvalidPostContentException.class, InvalidCategoryException.class})
+    public ResponseEntity<Map<String, String>> handleForumExceptions(Exception e) {
+        return ResponseEntity.badRequest()
+                .body(Map.of("message", e.getMessage()));
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, String>> handleGeneralError(Exception e) {
         log.error(e.getMessage());
+        log.error("e: ", e);
         return ResponseEntity.internalServerError()
                 .body(Map.of("message", "An unexpected error occurred"));
     }

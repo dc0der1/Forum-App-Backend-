@@ -1,4 +1,4 @@
-package com.example.freeforall.exceptions;
+package com.example.freeforall.exceptions.user;
 
 public class InvalidUsernameException extends RuntimeException {
     public InvalidUsernameException(String message) {

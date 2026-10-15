@@ -1,4 +1,4 @@
-package com.example.freeforall.exceptions;
+package com.example.freeforall.exceptions.user;
 
 public class InvalidPasswordException extends RuntimeException {
     public InvalidPasswordException(String message) {

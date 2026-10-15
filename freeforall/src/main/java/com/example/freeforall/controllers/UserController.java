@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 
 import java.net.URI;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/user")
@@ -24,8 +25,9 @@ public class UserController {
                 .body(UserResponse.fromModel(userService.registerUser(request)));
     }
 
-    @GetMapping("/login")
+    @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestBody LoginRequest request) {
-        return ResponseEntity.ok().body(userService.signInUser(request));
+        String token = userService.signInUser(request);
+        return ResponseEntity.ok().body(Map.of("token", token));
     }
 }
