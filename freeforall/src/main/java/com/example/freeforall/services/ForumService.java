@@ -6,6 +6,7 @@ import com.example.freeforall.entities.UserEntity;
 import com.example.freeforall.exceptions.InvalidCategoryException;
 import com.example.freeforall.exceptions.InvalidPostContentException;
 import com.example.freeforall.exceptions.InvalidPostTitleException;
+import com.example.freeforall.exceptions.PostNotFoundException;
 import com.example.freeforall.exceptions.user.UserNotFoundException;
 import com.example.freeforall.repositories.IForumRepository;
 import com.example.freeforall.repositories.IUserRepository;
@@ -14,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -50,5 +52,14 @@ public class ForumService implements IForumService{
         forumRepository.save(forum);
 
         return forum;
+    }
+
+    public List<ForumEntity> getAllForumPosts() {
+
+        if (forumRepository.findAll().isEmpty()) {
+            throw new PostNotFoundException("There are no forum posts right now.");
+        }
+
+        return forumRepository.findAll();
     }
 }

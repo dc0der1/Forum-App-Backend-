@@ -5,11 +5,14 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.UUID;
+
 @Getter
 @Setter
 @AllArgsConstructor
 public class ForumResponse {
 
+    private UUID postId;
     private String postTitle;
     private String postContent;
     private String postCategory;
@@ -19,6 +22,7 @@ public class ForumResponse {
 
     public static ForumResponse fromModel(ForumEntity forumEntity) {
         return new ForumResponse(
+                forumEntity.getId(),
                 forumEntity.getPostTitle(),
                 forumEntity.getPostContent(),
                 forumEntity.getCategory(),
