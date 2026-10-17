@@ -1,8 +1,7 @@
 package com.example.freeforall.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -17,6 +16,7 @@ import java.util.UUID;
 public class ReplyEntity {
 
     @Id
+    @Column(name = "reply_id")
     private final UUID id = UUID.randomUUID();
 
     private String reply;
@@ -24,4 +24,16 @@ public class ReplyEntity {
     @Column(name = "created_at", updatable = false)
     private final Date createdAt = new Date();
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "forum_id")
+    private ForumEntity forumEntity;
+
+    @JoinColumn(name = "user_id")
+    private UserEntity userEntity;
+
+    public ReplyEntity(String reply, ForumEntity forumEntity, UserEntity userEntity) {
+        this.reply = reply;
+        this.forumEntity = forumEntity;
+        this.userEntity = userEntity;
+    }
 }

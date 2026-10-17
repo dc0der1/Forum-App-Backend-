@@ -36,6 +36,10 @@ public class UserEntity implements UserDetails {
     @JoinColumn(name = "user_id")
     private List<ForumEntity> forumEntities = new ArrayList<>();
 
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private List<ReplyEntity> replyEntities = new ArrayList<>();
+
     public UserEntity(String username, String email, String password, Role role) {
         this.username = username;
         this.email = email;

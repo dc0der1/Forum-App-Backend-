@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -16,6 +17,7 @@ import java.util.UUID;
 public class ForumEntity {
 
     @Id
+    @Column(name = "forum_id")
     private final UUID id = UUID.randomUUID();
 
     private String postTitle;
@@ -30,6 +32,10 @@ public class ForumEntity {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity userEntity;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "forum_id")
+    private List<ReplyEntity> replies;
 
     public ForumEntity(String postTitle, String postContent, int likeCount, int replyCount, String category, UserEntity userEntity) {
         this.postTitle = postTitle;

@@ -1,4 +1,4 @@
-package com.example.freeforall.exceptions;
+package com.example.freeforall.exceptions.forum;
 
 public class InvalidCategoryException extends RuntimeException {
     public InvalidCategoryException(String message) {

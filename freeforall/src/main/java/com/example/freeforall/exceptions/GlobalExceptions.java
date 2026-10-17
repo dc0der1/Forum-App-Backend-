@@ -1,5 +1,8 @@
 package com.example.freeforall.exceptions;
 
+import com.example.freeforall.exceptions.forum.InvalidCategoryException;
+import com.example.freeforall.exceptions.forum.InvalidPostContentException;
+import com.example.freeforall.exceptions.forum.InvalidPostTitleException;
 import com.example.freeforall.exceptions.user.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -50,7 +53,9 @@ public class GlobalExceptions {
         return ResponseEntity.badRequest().body(body);
     }
 
-    @ExceptionHandler({InvalidPostTitleException.class, InvalidPostContentException.class, InvalidCategoryException.class})
+    @ExceptionHandler({InvalidPostTitleException.class, InvalidPostContentException.class,
+            InvalidCategoryException.class, InvalidReplyException.class
+    })
     public ResponseEntity<Map<String, String>> handleForumExceptions(Exception e) {
         return ResponseEntity.badRequest()
                 .body(Map.of("message", e.getMessage()));
