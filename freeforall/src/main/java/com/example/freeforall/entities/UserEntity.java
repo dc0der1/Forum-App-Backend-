@@ -40,6 +40,10 @@ public class UserEntity implements UserDetails {
     @JoinColumn(name = "user_id")
     private List<ReplyEntity> replyEntities = new ArrayList<>();
 
+    @OneToMany
+    @JoinColumn(name = "user_id")
+    private List<LikeEntity> likeEntities = new ArrayList<>();
+
     public UserEntity(String username, String email, String password, Role role) {
         this.username = username;
         this.email = email;

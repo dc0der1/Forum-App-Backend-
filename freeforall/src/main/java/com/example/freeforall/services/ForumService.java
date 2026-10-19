@@ -3,6 +3,7 @@ package com.example.freeforall.services;
 import com.example.freeforall.dtos.CreateForumRequest;
 import com.example.freeforall.dtos.CreateReplyRequest;
 import com.example.freeforall.entities.ForumEntity;
+import com.example.freeforall.entities.LikeEntity;
 import com.example.freeforall.entities.ReplyEntity;
 import com.example.freeforall.entities.UserEntity;
 import com.example.freeforall.exceptions.InvalidReplyException;
@@ -12,15 +13,18 @@ import com.example.freeforall.exceptions.forum.InvalidPostTitleException;
 import com.example.freeforall.exceptions.forum.PostNotFoundException;
 import com.example.freeforall.exceptions.user.UserNotFoundException;
 import com.example.freeforall.repositories.IForumRepository;
+import com.example.freeforall.repositories.ILikeRepository;
 import com.example.freeforall.repositories.IReplyRepository;
 import com.example.freeforall.repositories.IUserRepository;
 import com.example.freeforall.utils.AuthUtility;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +33,7 @@ public class ForumService implements IForumService{
     private final IUserRepository userRepository;
     private final IForumRepository forumRepository;
     private final IReplyRepository replyRepository;
+    private final ILikeRepository likeRepository;
 
     @Override
     public ForumEntity createForum(CreateForumRequest request) {
@@ -68,6 +73,7 @@ public class ForumService implements IForumService{
         return forumRepository.findAll();
     }
 
+    @Override
     public ReplyEntity replyToPost(CreateReplyRequest request, UUID postForumId) {
 
         if (request.getReply().isEmpty() || request.getReply().isBlank()) {
@@ -91,5 +97,50 @@ public class ForumService implements IForumService{
         replyRepository.save(replyEntity);
 
         return replyEntity;
+    }
+
+    @Override
+    public ForumEntity getAllReplies(UUID postForumId) {
+
+        if (forumRepository.findById(postForumId).isEmpty()) {
+            throw new PostNotFoundException("Couldn't find the post");
+        }
+
+        return forumRepository.findById(postForumId).get();
+    }
+
+    @Transactional
+    @Override
+    public LikeEntity likeAPost(UUID postForumId) {
+
+        UserEntity userEntity = userRepository.findUserByEmail(AuthUtility.currentUser())
+                .orElseThrow(() -> new UserNotFoundException("Could not find user!"));
+
+        ForumEntity forumEntity = forumRepository.findById(postForumId)
+                .orElseThrow(() -> new PostNotFoundException("Post could not be found!"));
+
+        Optional<LikeEntity> existingLike = likeRepository.findByUserEntityAndForumEntity(userEntity, forumEntity);
+
+        if (existingLike.isPresent()) {
+            LikeEntity likeEntity = existingLike.get();
+
+            if (likeEntity.isLiked()) {
+                likeEntity.setLiked(false);
+                forumEntity.setLikeCount(forumEntity.getLikeCount() - 1);
+            } else {
+                likeEntity.setLiked(true);
+                forumEntity.setLikeCount(forumEntity.getLikeCount() + 1);
+            }
+
+            forumRepository.save(forumEntity);
+            return likeRepository.save(likeEntity);
+        } else {
+            LikeEntity newLikeEntity = new LikeEntity(true, forumEntity, userEntity);
+
+            forumEntity.setLikeCount(forumEntity.getLikeCount() + 1);
+
+            forumRepository.save(forumEntity);
+            return likeRepository.save(newLikeEntity);
+        }
     }
 }

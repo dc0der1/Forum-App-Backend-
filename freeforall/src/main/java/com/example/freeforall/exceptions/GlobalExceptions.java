@@ -3,6 +3,7 @@ package com.example.freeforall.exceptions;
 import com.example.freeforall.exceptions.forum.InvalidCategoryException;
 import com.example.freeforall.exceptions.forum.InvalidPostContentException;
 import com.example.freeforall.exceptions.forum.InvalidPostTitleException;
+import com.example.freeforall.exceptions.forum.PostNotFoundException;
 import com.example.freeforall.exceptions.user.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -31,7 +32,7 @@ public class GlobalExceptions {
                 .body(Map.of("message", "Validation Error", "error", e.getMessage()));
     }
 
-    @ExceptionHandler({UserNotFoundException.class})
+    @ExceptionHandler({UserNotFoundException.class, PostNotFoundException.class})
     public ResponseEntity<Void> handleNotFound() {
         return ResponseEntity.notFound().build();
     }

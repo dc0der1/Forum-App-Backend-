@@ -28,6 +28,7 @@ public class ReplyEntity {
     @JoinColumn(name = "forum_id")
     private ForumEntity forumEntity;
 
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private UserEntity userEntity;
 

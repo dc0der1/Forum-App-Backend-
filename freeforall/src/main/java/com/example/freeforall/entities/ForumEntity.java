@@ -6,11 +6,12 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-@Entity
+@Entity(name = "forum")
 @Getter
 @Setter
 @RequiredArgsConstructor
@@ -35,7 +36,7 @@ public class ForumEntity {
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "forum_id")
-    private List<ReplyEntity> replies;
+    private List<ReplyEntity> replies = new ArrayList<>();
 
     public ForumEntity(String postTitle, String postContent, int likeCount, int replyCount, String category, UserEntity userEntity) {
         this.postTitle = postTitle;

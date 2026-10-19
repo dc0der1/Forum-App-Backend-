@@ -1,9 +1,6 @@
 package com.example.freeforall.controllers;
 
-import com.example.freeforall.dtos.CreateForumRequest;
-import com.example.freeforall.dtos.CreateReplyRequest;
-import com.example.freeforall.dtos.ForumResponse;
-import com.example.freeforall.dtos.ReplyResponse;
+import com.example.freeforall.dtos.*;
 import com.example.freeforall.entities.ForumEntity;
 import com.example.freeforall.services.ForumService;
 import lombok.RequiredArgsConstructor;
@@ -37,5 +34,16 @@ public class ForumController {
     public ResponseEntity<?> replyToPost(@RequestBody CreateReplyRequest request, @RequestParam UUID forumPostId) {
         return ResponseEntity.created(URI.create("/api/forum/reply"))
                 .body(ReplyResponse.fromModel(forumService.replyToPost(request, forumPostId)));
+    }
+
+    @PostMapping("/like")
+    public ResponseEntity<?> likeAPost(@RequestParam UUID forumPostId) {
+        return ResponseEntity.created(URI.create("/api/forum/like"))
+                .body(LikeResponse.fromModel(forumService.likeAPost(forumPostId)));
+    }
+
+    @GetMapping("/replies")
+    public ResponseEntity<?> getAllPostReplies(@RequestParam UUID forumPostId) {
+        return ResponseEntity.ok().body(ForumResponse.fromModel(forumService.getAllReplies(forumPostId)));
     }
 }
