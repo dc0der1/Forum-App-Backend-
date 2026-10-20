@@ -6,6 +6,7 @@ import com.example.freeforall.entities.ForumEntity;
 import com.example.freeforall.entities.LikeEntity;
 import com.example.freeforall.entities.ReplyEntity;
 import com.example.freeforall.entities.UserEntity;
+import com.example.freeforall.exceptions.InvalidOwnerShipException;
 import com.example.freeforall.exceptions.InvalidReplyException;
 import com.example.freeforall.exceptions.forum.InvalidCategoryException;
 import com.example.freeforall.exceptions.forum.InvalidPostContentException;
@@ -19,6 +20,8 @@ import com.example.freeforall.repositories.IUserRepository;
 import com.example.freeforall.utils.AuthUtility;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -64,13 +67,13 @@ public class ForumService implements IForumService{
         return forum;
     }
 
-    public List<ForumEntity> getAllForumPosts() {
+    public Page<ForumEntity> getAllForumPosts(Pageable pageable) {
 
         if (forumRepository.findAll().isEmpty()) {
             throw new PostNotFoundException("There are no forum posts right now.");
         }
 
-        return forumRepository.findAll();
+        return forumRepository.findAll(pageable);
     }
 
     @Override
@@ -142,5 +145,19 @@ public class ForumService implements IForumService{
             forumRepository.save(forumEntity);
             return likeRepository.save(newLikeEntity);
         }
+    }
+
+    public void deletePost(UUID postForumId) {
+
+        UserEntity user = userRepository.findUserByEmail(AuthUtility.currentUser())
+                .orElseThrow(() -> new UserNotFoundException("User could not be found!"));
+        ForumEntity forumEntity = forumRepository.findById(postForumId)
+                .orElseThrow(() -> new PostNotFoundException("Post could not be found!"));
+
+        if (user.getId() != forumEntity.getUserEntity().getId()) {
+            throw new InvalidOwnerShipException("This post isn't owned by " + user.getUsername());
+        }
+
+        forumRepository.delete(forumEntity);
     }
 }

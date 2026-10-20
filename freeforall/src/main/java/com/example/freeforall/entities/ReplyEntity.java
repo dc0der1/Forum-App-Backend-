@@ -24,11 +24,11 @@ public class ReplyEntity {
     @Column(name = "created_at", updatable = false)
     private final Date createdAt = new Date();
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "forum_id")
     private ForumEntity forumEntity;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private UserEntity userEntity;
 

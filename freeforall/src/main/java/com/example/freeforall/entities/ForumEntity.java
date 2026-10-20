@@ -30,13 +30,17 @@ public class ForumEntity {
     private int likeCount;
     private int replyCount;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity userEntity;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinColumn(name = "forum_id")
     private List<ReplyEntity> replies = new ArrayList<>();
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @JoinColumn(name = "forum_id")
+    private List<LikeEntity> likes = new ArrayList<>();
 
     public ForumEntity(String postTitle, String postContent, int likeCount, int replyCount, String category, UserEntity userEntity) {
         this.postTitle = postTitle;

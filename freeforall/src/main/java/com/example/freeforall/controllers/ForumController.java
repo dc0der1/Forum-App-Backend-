@@ -4,6 +4,8 @@ import com.example.freeforall.dtos.*;
 import com.example.freeforall.entities.ForumEntity;
 import com.example.freeforall.services.ForumService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,9 +27,14 @@ public class ForumController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<?> getForumPosts() {
-        List<ForumEntity> forumEntities = forumService.getAllForumPosts();
-        return ResponseEntity.ok().body(forumEntities.stream().map(ForumResponse::fromModel).toList());
+    public ResponseEntity<?> getForumPosts(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "postTitle") String sortBy,
+            @RequestParam(defaultValue = "true") boolean ascending
+    ) {
+        Sort sort = ascending ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        return ResponseEntity.ok().body(forumService.getAllForumPosts(PageRequest.of(page, size, sort)).stream().map(ForumResponse::fromModel).toList());
     }
 
     @PostMapping("/reply")
@@ -45,5 +52,11 @@ public class ForumController {
     @GetMapping("/replies")
     public ResponseEntity<?> getAllPostReplies(@RequestParam UUID forumPostId) {
         return ResponseEntity.ok().body(ForumResponse.fromModel(forumService.getAllReplies(forumPostId)));
+    }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<?> deleteAPost(@RequestParam UUID forumPostId) {
+        forumService.deletePost(forumPostId);
+        return ResponseEntity.noContent().build();
     }
 }

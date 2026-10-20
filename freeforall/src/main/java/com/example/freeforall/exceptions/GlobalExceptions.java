@@ -55,7 +55,7 @@ public class GlobalExceptions {
     }
 
     @ExceptionHandler({InvalidPostTitleException.class, InvalidPostContentException.class,
-            InvalidCategoryException.class, InvalidReplyException.class
+            InvalidCategoryException.class, InvalidReplyException.class, InvalidOwnerShipException.class
     })
     public ResponseEntity<Map<String, String>> handleForumExceptions(Exception e) {
         return ResponseEntity.badRequest()

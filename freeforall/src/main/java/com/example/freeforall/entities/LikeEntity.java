@@ -28,7 +28,7 @@ public class LikeEntity {
     @JoinColumn(name = "forum_id")
     private ForumEntity forumEntity;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private UserEntity userEntity;
 
