@@ -2,6 +2,7 @@ package com.example.freeforall.services;
 
 import com.example.freeforall.dtos.CreateForumRequest;
 import com.example.freeforall.dtos.CreateReplyRequest;
+import com.example.freeforall.dtos.UpdateForumRequest;
 import com.example.freeforall.entities.ForumEntity;
 import com.example.freeforall.entities.LikeEntity;
 import com.example.freeforall.entities.ReplyEntity;
@@ -147,6 +148,7 @@ public class ForumService implements IForumService{
         }
     }
 
+    @Override
     public void deletePost(UUID postForumId) {
 
         UserEntity user = userRepository.findUserByEmail(AuthUtility.currentUser())
@@ -159,5 +161,23 @@ public class ForumService implements IForumService{
         }
 
         forumRepository.delete(forumEntity);
+    }
+
+    public ForumEntity updatePost(UUID postForumId, UpdateForumRequest request) {
+
+        UserEntity userEntity = userRepository.findUserByEmail(AuthUtility.currentUser())
+                .orElseThrow(() -> new UserNotFoundException("User could not be found!"));
+        ForumEntity forumEntity = forumRepository.findById(postForumId)
+                .orElseThrow(() -> new PostNotFoundException("Post could not be found!"));
+
+        if (userEntity.getId() != forumEntity.getUserEntity().getId()) {
+            throw new InvalidOwnerShipException("This post isn't owned by " + userEntity.getUsername());
+        }
+
+        forumEntity.setPostTitle(request.getPostTitle());
+        forumEntity.setPostContent(request.getPostContent());
+        forumEntity.setCategory(request.getCategory());
+
+        return forumRepository.save(forumEntity);
     }
 }

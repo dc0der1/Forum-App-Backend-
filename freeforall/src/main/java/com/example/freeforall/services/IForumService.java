@@ -13,4 +13,5 @@ public interface IForumService {
     ReplyEntity replyToPost(CreateReplyRequest request, UUID postForumId);
     ForumEntity getAllReplies(UUID postForumId);
     LikeEntity likeAPost(UUID postForumId);
+    void deletePost(UUID postForumId);
 }

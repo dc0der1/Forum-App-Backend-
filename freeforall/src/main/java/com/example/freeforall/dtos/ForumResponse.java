@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,6 +21,7 @@ public class ForumResponse {
     private String postCategory;
     private int replyCount;
     private int likeCount;
+    private Date postedAt;
     private UserResponse userResponse;
     private List<ReplyResponse> replies;
 
@@ -31,6 +33,7 @@ public class ForumResponse {
                 forumEntity.getCategory(),
                 forumEntity.getReplyCount(),
                 forumEntity.getLikeCount(),
+                forumEntity.getCreatedAt(), 
                 UserResponse.fromModel(forumEntity.getUserEntity()),
                 forumEntity.getReplies().stream().map(ReplyResponse::fromModel).toList()
         );

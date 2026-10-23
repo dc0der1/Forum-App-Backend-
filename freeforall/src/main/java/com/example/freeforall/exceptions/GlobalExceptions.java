@@ -29,7 +29,7 @@ public class GlobalExceptions {
             InvalidUsernameException.class, InvalidLoginException.class})
     public ResponseEntity<Map<String, String>> handleValidationExceptions(Exception e) {
         return ResponseEntity.badRequest()
-                .body(Map.of("message", "Validation Error", "error", e.getMessage()));
+                .body(Map.of("error", "Validation Error", "message", e.getMessage()));
     }
 
     @ExceptionHandler({UserNotFoundException.class, PostNotFoundException.class})

@@ -59,4 +59,9 @@ public class ForumController {
         forumService.deletePost(forumPostId);
         return ResponseEntity.noContent().build();
     }
+
+    @PatchMapping("/update")
+    public ResponseEntity<?> updatePost(@RequestParam UUID forumPostId, @RequestBody UpdateForumRequest request) {
+        return ResponseEntity.ok().body(ForumResponse.fromModel(forumService.updatePost(forumPostId, request)));
+    }
 }

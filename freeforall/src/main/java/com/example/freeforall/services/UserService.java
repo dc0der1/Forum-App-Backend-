@@ -3,6 +3,7 @@ package com.example.freeforall.services;
 import at.favre.lib.crypto.bcrypt.BCrypt;
 import com.example.freeforall.dtos.CreateUserRequest;
 import com.example.freeforall.dtos.LoginRequest;
+import com.example.freeforall.dtos.LoginResponse;
 import com.example.freeforall.entities.Role;
 import com.example.freeforall.entities.UserEntity;
 import com.example.freeforall.exceptions.user.InvalidLoginException;
@@ -57,7 +58,7 @@ public class UserService implements IUserService{
     }
 
     @Override
-    public String signInUser(LoginRequest request) {
+    public LoginResponse signInUser(LoginRequest request) {
         Optional<UserEntity> optionalUser = userRepository.findUserByEmail(request.getEmail());
 
         if (optionalUser.isEmpty()) {
@@ -76,6 +77,6 @@ public class UserService implements IUserService{
             throw new InvalidLoginException("Invalid email or password");
         }
 
-        return jwtService.generateToken(user);
+        return new LoginResponse(jwtService.generateToken(user), user.getId());
     }
 }
