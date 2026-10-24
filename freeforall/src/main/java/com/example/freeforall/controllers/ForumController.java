@@ -64,4 +64,47 @@ public class ForumController {
     public ResponseEntity<?> updatePost(@RequestParam UUID forumPostId, @RequestBody UpdateForumRequest request) {
         return ResponseEntity.ok().body(ForumResponse.fromModel(forumService.updatePost(forumPostId, request)));
     }
+
+    @GetMapping("/category")
+    public ResponseEntity<?> findPostsByCategory(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "forum.post_title") String sortBy,
+            @RequestParam(defaultValue = "true") boolean ascending,
+            @RequestParam String category
+    ) {
+        Sort sort = ascending ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        return ResponseEntity.ok().body(forumService.getPostByCategory(PageRequest.of(page, size, sort), category)
+                .stream()
+                .map(ForumResponse::fromModel)
+                .toList());
+    }
+
+    @GetMapping("/popular")
+    public ResponseEntity<?> getPopularPosts(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "forum.post_title") String sortBy,
+            @RequestParam(defaultValue = "true") boolean ascending
+    ) {
+        Sort sort = ascending ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        return ResponseEntity.ok().body(forumService.getMostPopularPosts(PageRequest.of(page, size, sort))
+                .stream()
+                .map(ForumResponse::fromModel)
+                .toList());
+    }
+
+    @GetMapping("/latest")
+    public ResponseEntity<?> getLatestPosts(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "forum.post_title") String sortBy,
+            @RequestParam(defaultValue = "true") boolean ascending
+    ) {
+        Sort sort = ascending ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        return ResponseEntity.ok().body(forumService.getLatestPosts(PageRequest.of(page, size, sort))
+                .stream()
+                .map(ForumResponse::fromModel)
+                .toList());
+    }
 }

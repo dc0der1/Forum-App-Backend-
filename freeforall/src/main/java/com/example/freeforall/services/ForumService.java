@@ -180,4 +180,16 @@ public class ForumService implements IForumService{
 
         return forumRepository.save(forumEntity);
     }
+
+    public Page<ForumEntity> getPostByCategory(Pageable pageable, String category) {
+        return forumRepository.findByCategory(pageable, category);
+    }
+
+    public Page<ForumEntity> getMostPopularPosts(Pageable pageable) {
+        return forumRepository.findMostPopularPosts(pageable);
+    }
+
+    public Page<ForumEntity> getLatestPosts(Pageable pageable) {
+        return forumRepository.findLatestPosts(pageable);
+    }
 }
