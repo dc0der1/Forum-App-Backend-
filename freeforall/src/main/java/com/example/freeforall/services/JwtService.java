@@ -4,6 +4,7 @@ import com.example.freeforall.entities.UserEntity;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +17,8 @@ import java.util.UUID;
 @Service
 public class JwtService implements IJwtService{
 
-    private final String secretKey = "SUPERDOOPERSECRETKEY123THATSHOULDHOPEFULLYBE256BITSFORITTOWORK";
+    @Value("${jwt.secret.key}")
+    private String secretKey;
 
     @Override
     public String generateToken(UserEntity userEntity) {
